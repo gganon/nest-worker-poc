@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Header, HttpCode, Post } from '@nestjs/common';
 import { AppService } from './app.service';
-import { pbkdf2Sync, randomBytes } from 'crypto';
+import { strongHashAsync } from './worker/strong-hash-async';
 
 @Controller()
 export class AppController {
@@ -15,7 +15,6 @@ export class AppController {
   @HttpCode(200)
   @Header('Content-Type', 'text/plain')
   getStrongHash(@Body('input') input: string) {
-    const buffer = pbkdf2Sync(input, randomBytes(64), 5000000, 64, 'sha512');
-    return buffer.toString('base64');
+    return strongHashAsync(input);
   }
 }
